@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>보안문자 연습</title>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+      }
+      div {
+        text-align: center;
+        font-family: "Noto Sans KR", sans-serif;
+      }
+      #box {
+        width: 25em;
+        margin: 10px;
+      }
+      #title {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #8173fd;
+      }
+      #security_word {
+        width: 95%;
+        height: 2em;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        color: #c5c205;
+        font-size: 2em;
+        font-weight: bold;
+        letter-spacing: 0.15em;
+        margin: 0.5em auto;
+      }
+      input {
+        width: 90%;
+        height: 2em;
+        padding: 0.3em 0.5em;
+        font-size: 1em;
+        font-family: "Noto Sans KR", sans-serif;
+      }
+      input::placeholder {
+        color: gray;
+      }
+      button {
+        font-family: "Noto Sans KR", sans-serif;
+        font-size: 1em;
+        width: 47%;
+        height: 2.5em;
+        color: white;
+        margin-top: 1em;
+        cursor: pointer;
+        border: none;
+      }
+      #cancel {
+        background-color: gray;
+      }
+      #ok {
+        background-color: #222222;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box">
+      <div id="title">문자를 입력해주세요.</div>
+      <div>
+        부정 예매 방지를 위해 아래의 문자를 입력해주세요.<br />
+        인증 후 좌석을 선택할 수 있습니다.
+      </div>
+      <div id="security_word"></div>
+      <input
+        type="text"
+        maxlength="6"
+        placeholder="문자를 입력해주세요."
+        oninput="this.value = this.value.toUpperCase(); handleInput(this);"
+      />
+      <button id="cancel" onclick="canceled()">날짜 다시 선택</button>
+      <button id="ok" onclick="verify()">입력완료</button>
+    </div>
+
+    <script>
+      let secretBox = document.getElementById("security_word");
+      let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      let hex = "0123456789ABCDEF".split("");
+      let secret = [];
+      let bg = ["5", "8"];
+
+      for (let i = 0; i < 6; i++) {
+        const rand = Math.floor(Math.random() * 26);
+        secret.push(letters[rand]);
+      }
+
+      secretBox.textContent = secret.join("");
+
+      for (let i = 0; i < 4; i++) {
+        const rand = Math.floor(Math.random() * 16);
+
+        if (i < 2) bg.unshift(hex[rand]);
+        else bg.push(hex[rand]);
+      }
+
+      secretBox.style.backgroundColor = `#${bg.join("")}`;
+
+      let verify = () => {
+        let input = document.querySelector("#box input");
+        let bgContent = document.getElementById("security_word");
+
+        if (input.value === bgContent.textContent) {
+          alert("SUCCESS");
+
+          document.getElementById("box").innerHTML = `
+                <div style="font-size:2em;">성공이다!</div>
+                `;
+        } else alert("다시 입력해주세요.");
+
+        input.value = "";
+        input.focus();
+      };
+
+      let handleInput = (self) => {
+        self.value = self.value.replace(/[^A-Z]/gi, "");
+      };
+
+      let canceled = () => {
+        let input = document.querySelector("#box input");
+
+        input.value = "";
+        input.focus();
+      };
+    </script>
+  </body>
+</html>
